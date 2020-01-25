@@ -22,7 +22,7 @@ struct _node* new_trie(){
 
 
 }
-struct node* new_node()
+struct _node* new_node()
 {
     _node* temp=(_node*)malloc(sizeof(_node));
     for(int i=0;i<ALPHABET;i++)
@@ -35,7 +35,7 @@ struct node* new_node()
 }
 void insert_node(_node* base , char* word, int length){
     int i = 0;
-    struct node* tmp = base;
+    struct _node* tmp = base;
 
     while (i<length)
     {
@@ -72,29 +72,25 @@ for(int i =0; i<ALPHABET;i++){
 
     
 }
-void ReverePrint(_node* base, int height, char word[]){
+void ReversePrint(_node* base, int height, char word[]){
     if(base->EndOfWord){
         print(word,base->count);
     }
     for(int i =ALPHABET-1; i>=0;i--){
     if(base->child!=NULL){
         word[height]='a'+i;
-        ReverePrint(base->child[i],height+1,word);
+        ReversePrint(base->child[i],height+1,word);
     }
-
-
-
-
-
+    }
 }
 
 void FreeMem(_node* base){
 
     _node* forFree = base;
-    for(int i = ALPHABET-1;i>=0;i--){
+    for(int i =0; i<ALPHABET;i++){
         if (forFree->child[i]!=NULL)
         {
-            FreeMem(forFree->child[i])
+            FreeMem(forFree->child[i]);
         }
         free(forFree);
         
@@ -102,6 +98,7 @@ void FreeMem(_node* base){
 
 
 }
+
 
 
 
