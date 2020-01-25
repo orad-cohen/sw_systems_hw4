@@ -10,13 +10,20 @@
 struct _node* new_trie(){
 
     _node* base = new_node();
-    char keys[ALPHABET];
+
+    char letters[ALPHABET];
+
     int length_key=0;   
-    do{
-     length_key=get_word(keys);
+    do
+    {
+     length_key=WordLength(letters);
      if(length_key!=0)
-     insert_node(base,keys,length_key);
-    }while(length_key!=0);
+     {
+        insert_node(base,letters,length_key);
+     }
+     
+    }
+    while(length_key!=0);
 
     return base;
 
@@ -33,6 +40,35 @@ struct _node* new_node()
    
     return temp;
 }
+int WordLength(char word[])
+{
+    int len=0;
+    char letter;
+    char* tmpword=word;
+    
+
+    do
+    {
+        if(scanf("%c",&letter)==EOF)
+        {
+        return 0;
+        }
+	    if(letter>='A'&&letter<='Z')
+        {
+            letter+=32;
+        }    
+	    if(letter>='a'&&letter<='z') 					 
+        {
+            len++;
+            *(tmpword++)=letter;
+             
+        }
+    }
+    while(letter!='\n'&&letter!='\t'&&letter!=' ');
+
+    return len;
+}
+
 void insert_node(_node* base , char* word, int length){
     int i = 0;
     struct _node* tmp = base;
@@ -61,7 +97,7 @@ void PrintWords(_node* base, int height, char word[]){
 
 if(base->EndOfWord){
     word[height] = '\0';
-    print(word,base->count);
+    printf(word,base->count);
 }
 for(int i =0; i<ALPHABET;i++){
     if(base->child!=NULL){
@@ -74,7 +110,7 @@ for(int i =0; i<ALPHABET;i++){
 }
 void ReversePrint(_node* base, int height, char word[]){
     if(base->EndOfWord){
-        print(word,base->count);
+        printf(word,base->count);
     }
     for(int i =ALPHABET-1; i>=0;i--){
     if(base->child!=NULL){

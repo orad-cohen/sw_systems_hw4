@@ -1,7 +1,7 @@
 CC=gcc
 AR=ar
 OBJECTS_MAIN=main.o
-FLAGS= -Wall -g
+FLAGS= -Wall -fPIC
 
 
 all: frequency
@@ -10,9 +10,9 @@ frequency: $(OBJECTS_MAIN) libfrequency.a
 	$(CC) $(FLAGS) -o frequency $(OBJECTS_MAIN) libfrequency.a
 
 libfrequency.a: frequency.o
-	$(AR) -rcs libfrequency.a frequency.c
+	$(AR) -rcs libfrequency.a frequency.o
 
-frequency.o:frequency.c frequency.h
+frequency.o: frequency.c frequency.h
 	$(CC) $(FLAGS) -c frequency.c
 
 main.o: main.c frequency.h

@@ -19,5 +19,7 @@ typedef struct _node
 
  void ReversePrint(_node* base, int height, char word[]);
 
+int WordLength(char word[]);
+
  void FreeMem(_node* base);
 #endif
