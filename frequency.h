@@ -1,25 +1,24 @@
-#ifndef FREQ
-#define FREQ
+#ifndef FREQUENCYH
+#define FREQUENCYH
 #define ALPHABET ((int)26)
 typedef struct _node
 {
- char letter;
+ char _letter;
  long count;
- struct _node* child[ALPHABET];
- bool EndOfWord;}
- _node;
+ struct _node* next[ALPHABET];
+ bool _EndOfWord;
+}_node;
+struct _node* NewTrie();
+struct _node* node();
+void UpLex(_node* root,char str[],int level);
+void DownLex(_node* root,char str[],int level);
 
- struct _node* new_trie();
+void insert_node(_node* root,char* key,int length);
 
- struct _node* new_node();
+bool is_word(_node* root);
 
- void insert_node(_node* base , char* word, int length);
+int get_word(char str[]);
 
- void PrintWords(_node* base, int height, char word[]);
-
- void ReversePrint(_node* base, int height, char word[]);
-
-int WordLength(char word[]);
-
- void FreeMem(_node* base);
+void print(char str[],int count);
+void freemem(_node* root);
 #endif

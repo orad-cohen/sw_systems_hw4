@@ -1,156 +1,152 @@
 #include <stdio.h>
-#include <string.h>
-#include <stdbool.h>
 #include <stdlib.h>
-
+#include <stdbool.h>
+#include <string.h>
 #include "frequency.h"
 
 
-
-struct _node* new_trie(){
-
-    _node* base = new_node();
-
-    char letters[ALPHABET];
-
-    int length_key=0;   
+struct _node* NewTrie()
+{
+    _node* base = node();
+    char keys[ALPHABET];
+    int length_key=0;
+   
     do
     {
-     length_key=GetWord(letters);
-     printf("%i",length_key);
+     length_key=get_word(keys);
      if(length_key!=0)
-     {
-        insert_node(base,letters,length_key);
-     }
-     
-    }
-    while(length_key!=0);
-
+     insert_node(base ,keys,length_key);
+    }while(length_key!=0);
+   
     return base;
-
-
 }
-struct _node* new_node()
+struct _node* node()
 {
-    _node* temp=(_node*)malloc(sizeof(_node));
-    for(int i=0;i<ALPHABET;i++){
-        temp->child[i]=NULL;
-    }        
+    _node* tmp=(_node*)malloc(sizeof(_node));
+    for(int i=0;i<ALPHABET;i++)
+        tmp->next[i]=NULL;
    
-    temp->EndOfWord=false;
-    temp->count=0;
+    tmp->_EndOfWord=false;
+    tmp->count=0;
    
-    return temp;
+    return tmp;
 }
-int GetWord(char word[])
+
+int get_word(char str[])
 {
-    int len=0;
-    char letter;
-    char* tmpword=word;
     
-    printf("tadam");
+    char letter;
+    char* word=str;
+     int len = 0;
     do
     {
-        if(scanf("%c",&letter)==EOF)
-        {
-        return 0;
-        }
-	    if(letter>='A'&&letter<='Z')
-        {
-            letter+=32;
-        }    
+        if(scanf("%c",&letter)==EOF){
+            return 0;}
+	    if(letter>='A'&&letter<='Z'){
+            letter+=32;}
 	    if(letter>='a'&&letter<='z') 					 
         {
-            len++;
-            *(tmpword++)=letter;
-             
+            *(word++)=letter;
+             len++;
         }
-    }
-    while(letter!='\n'&&letter!='\t'&&letter!=' ');
+    }while(letter!='\n'&&letter!='\t'&&letter!=' ');
 
     return len;
 }
-bool is_word(_node* base)
+
+
+
+void insert_node(_node* base,char* word,int len)
 {
-    
-    return base->EndOfWord;
-}
-
-
-void insert_node(_node* base , char* word, int length){
-    
-    struct _node * tmp = base;
-
-    for(int i=0;i<length;i++)
+    int height;
+    struct _node* tmp=base;
+   
+    for(height=0;height<len;height++)
     {
-        int key=word[i]-'a';
-        if(tmp->child[key]==NULL)
+        int i=word[height]-'a';
+
+        if(tmp->next[i]==NULL)
         {
-            tmp->child[key]=new_node();
+            tmp->next[i]=node();
        
         }
-        tmp=tmp->child[key];
+        tmp=tmp->next[i];
        
     }
-    if(tmp->EndOfWord)
+    if(tmp->_EndOfWord)
         tmp->count++;
     else
     {
-        tmp->EndOfWord=true;
+        tmp->_EndOfWord=true;
         tmp->count=1;
     }
 }
 
-void PrintWords(_node* base, int height, char word[]){
-
-if(is_word(base)){
-    word[height] = '\0';
-    print(word,base->count);
+bool EndOfWord(_node* base)
+{
+    return base->_EndOfWord;
 }
-for(int i =0; i<ALPHABET-1;i++){
-    if(base->child[i]){
-        word[height]='a'+i;
-        PrintWords(base->child[i],height+1,word);
+
+
+void UpLex(_node* base,char str[],int level)
+{
+    if(EndOfWord(base))
+    {
+        str[level]='\0';
+        print(str,base->count);
     }
-}
-
-    
-}
-void ReversePrint(_node* base, int height, char word[]){
+    int i;
+    for(i=0;i<ALPHABET;i++)
+    {
+        if(base->next[i])
+        {
+            str[level]=i+'a';
+            UpLex(base->next[i],str,level+1);
+        }
+    }
    
-    if(is_word(base)){
-        word[height] = '\0';
-        print(word,base->count);
+}
+
+void DownLex(_node* base,char str[],int level)
+{
+    if(EndOfWord(base))
+    {
+        str[level]='\0';
+        print(str,base->count);
     }
-    
+   int i;
+    for(i=ALPHABET-1;i>=0;i--)
+    {
+        if(base->next[i])
+        {
+            str[level]=i+'a';
+            DownLex(base->next[i],str,level+1);
+        }
+ 
+    }
+   
+}
+
+
+
+void freemem(_node* base)
+{
+    _node* tmp=base;
 
     int i;
-    
-    for(i =ALPHABET-1; i>=0;i--){
-        
-        if(base->child[i]){
-            
-            word[height]='a'+i;
-            ReversePrint(base->child[i],height+1,word);
-    }
-    }
-}
-void print(char str[],int count)
-{
-    printf("%s\t%d\n",str,count);
-}
 
-void FreeMem(_node* base){
-
-    _node* forFree = base;
-    for(int i = ALPHABET; i<=0;i--){
-        if (forFree->child[i])
+    for(i=ALPHABET-1;i>=0;i--) {
+        if(base->next[i])
         {
-            FreeMem(forFree->child[i]);
-        }
-        free(forFree);
-        
-    } 
+            freemem(tmp->next[i]); 
+        }      
+    }
 
+free(base);
 
+}
+
+void print(char word[],int count)
+{
+    printf("%s\t%d\n",word,count);
 }

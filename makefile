@@ -1,24 +1,19 @@
-CC=gcc
-AR=ar
-OBJECTS_MAIN=main.o
-FLAGS= -Wall -fPIC
 
+all: freqlib.so frequency
 
-all: frequency
+frequency: main.o freqlib.so
+	gcc -Wall -o frequency main.o ./freqlib.so
+freqlib: freqlib.so
 
-frequency: $(OBJECTS_MAIN) libfrequency.a
-	$(CC) $(FLAGS) -o frequency $(OBJECTS_MAIN) libfrequency.a
-
-libfrequency.a: frequency.o
-	$(AR) -rcs libfrequency.a frequency.o
-
-frequency.o: frequency.c frequency.h
-	$(CC) $(FLAGS) -c frequency.c
+freqlib.so: frequency.o
+	gcc -shared -o freqlib.so frequency.o
 
 main.o: main.c frequency.h
-	$(CC) $(FLAGS) -c main.c
+	gcc -Wall -fPIC -g -c main.c
+.PHONY: clean all freqlib
 
-.PHONY: clean
+frequency.o: frequency.c frequency.h
+	gcc -Wall -fPIC -g -c frequency.c
 
-clean:
-	rm *.a *.o frequency
+clean: 
+	rm -f *.o *.so frequency
